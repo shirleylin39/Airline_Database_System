@@ -8,13 +8,11 @@ def main():
     c = conn.cursor()
 
     airline_table(c)
-    conn.commit()
-
+     
     root = tk.Tk()
-    app = AirlineDatabaseGUI(root)
+    AirlineDatabaseGUI(root)
     root.mainloop()
 
-   
     conn.close()
 
 if __name__ == "__main__":
