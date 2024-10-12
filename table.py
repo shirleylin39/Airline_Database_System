@@ -71,7 +71,7 @@ def airline_table(c):
 
     c.execute("""
       CREATE TABLE IF NOT EXISTS Flight(
-        FlightID TEXT,
+        FlightID TEXT PRIMARY KEY,
         DepartureAirportCode TEXT,
         DepartureDateTime_Local DATETIME,
         ArrivalAirportCode TEXT,
@@ -88,7 +88,6 @@ def airline_table(c):
     c.execute("""
       INSERT OR IGNORE INTO Flight VALUES
         ('BA1499','GLA','2023-11-03 11:45','LHR','2023-11-03 13:10','A321003','256'),
-        ('BA1499','GLA','2023-11-03 11:45','LHR','2023-11-03 13:10','A321003','512'),
         ('TG436','CGK','2023-11-05 19:05','BKK','2023-11-05 22:35','B777002','512'),
         ('CX840','HND','2023-11-09 17:20','JFK','2023-11-09 19:05','A350006','256'),
         ('SQ52','SIN','2023-12-01 08:30','SFO','2023-12-01 19:10','B787900','7168'),
