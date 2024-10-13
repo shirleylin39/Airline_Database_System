@@ -56,7 +56,6 @@ class AirlineDatabaseGUI:
     
         duration = arrival_utc_time - departure_utc_time
 
-
         if duration.total_seconds() < 0:
             duration += timedelta(days=1)
 
@@ -106,8 +105,8 @@ class AirlineDatabaseGUI:
         tree.pack()
 
         button_width=20
-        #search_button = tk.Button(self.content_frame, text ="Search", command = self.search_flight, width=button_width)
-        #search_button.pack(pady=5)
+        search_button = tk.Button(self.content_frame, text ="Search Flight", command = self.search_flight, width=button_width)
+        search_button.pack(pady=5)
         edit_button = tk.Button(self.content_frame, text="Edit Selected Flight", command=lambda: self.edit_flight(tree), width=button_width)
         edit_button.pack(pady=5)
         delete_button = tk.Button(self.content_frame, text="Delete Selected Flight", command=lambda: delete_flight(tree), width=button_width)
@@ -152,9 +151,7 @@ class AirlineDatabaseGUI:
         self.content_frame.grid_columnconfigure(6, weight=1) 
         self.content_frame.grid_columnconfigure(7, weight=8)
         
-        
         tk.Label(self.content_frame, text=f"Edit Flight {flight_data[0]}", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
-        
         
         instructions = [
             "Departure Airport Code:",
@@ -162,8 +159,7 @@ class AirlineDatabaseGUI:
             "Arrival Airport Code:",
             "Local Arrival Date/Time:",
             "Aircraft ID:",
-            "Pilot ID:"
-        ]
+            "Pilot ID:"]
 
         entries = {}
         flight_id_value = flight_data[0] 
@@ -201,7 +197,6 @@ class AirlineDatabaseGUI:
                 year_ori, month_ori, day_ori = date_time_value.split()[0].split("-")
                 hour_ori, minute_ori = date_time_value.split()[1].split(":")
 
-
                 year_values = [str(y) for y in range(2010, 2051)]
                 year_box = ttk.Combobox(self.content_frame, values=year_values, width=5, state="readonly")
                 year_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "w")
@@ -211,7 +206,6 @@ class AirlineDatabaseGUI:
                 month_box = ttk.Combobox(self.content_frame, values=month_values, width=3, state="readonly")
                 month_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "e")
                 month_box.set(month_ori) 
-
 
                 day_values = [str(d).zfill(2) for d in range(1, 32)]
                 day_box = ttk.Combobox(self.content_frame, values=day_values, width=3, state="readonly")
@@ -302,7 +296,6 @@ class AirlineDatabaseGUI:
         self.content_frame.grid_columnconfigure(7, weight=8) 
         tk.Label(self.content_frame, text="Add New Flight", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
         
-
         instructions = [
             "Flight ID:",
             "Departure Airport Code:",
@@ -345,7 +338,6 @@ class AirlineDatabaseGUI:
                 entry['values'] = airport_ids
                 entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
                 
-
             elif "Date/Time" in instruction:
                 year_values = [str(y) for y in range(2010, 2051)]
                 year_box = ttk.Combobox(self.content_frame, values=year_values, width=5, state="readonly")
@@ -356,7 +348,6 @@ class AirlineDatabaseGUI:
                 month_box = ttk.Combobox(self.content_frame, values=month_values,width=3, state="readonly")
                 month_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "e")
                 month_box.set("11") 
-
 
                 day_values = [str(d).zfill(2) for d in range(1, 32)]
                 day_box = ttk.Combobox(self.content_frame, values=day_values,width=3, state="readonly")
@@ -374,12 +365,10 @@ class AirlineDatabaseGUI:
                 minute_box.set("30")
 
                 entry = (year_box, month_box, day_box, hour_box, minute_box)
-            
         
             else:
                 entry = tk.Entry(self.content_frame)
                 entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
-
       
             entries[instruction] = entry
 
@@ -430,58 +419,231 @@ class AirlineDatabaseGUI:
     def search_flight(self):
 
         self.clear_content()
-        tk.Label(self.content_frame, text="Search Flight", font=("Arial", 18)).pack(pady=10)
+        self.content_frame.grid_columnconfigure(0, weight=5)
+        self.content_frame.grid_columnconfigure(1, weight=8)
+        self.content_frame.grid_columnconfigure(2, weight=1)
+        self.content_frame.grid_columnconfigure(3, weight=1)
+        self.content_frame.grid_columnconfigure(4, weight=1)
+        self.content_frame.grid_columnconfigure(5, weight=1)
+        self.content_frame.grid_columnconfigure(6, weight=1)
+        self.content_frame.grid_columnconfigure(7, weight=8)
+        tk.Label(self.content_frame, text="Search Flight", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
 
-        entity_label = tk.Label(self.content_frame, text="Label:")
-        entity_label.pack()
+        instructions = ["Flight ID:",
+                        "Departure Country:",
+                        "Departure City:", 
+                        "Departure Airport Code:",
+                        "Local Departure Date/Time:", 
+                        "Departure Time Zone:",
+                        "Arrival Country:",
+                        "Arrival City:", 
+                        "Arrival Airport Code:",
+                        "Local Arrival Date/Time:",
+                        "Arrival Time Zone:",
+                        "Aircraft ID:", 
+                        "Pilot ID:"]
+        
+        entries = {}
 
-        entity_var = tk.StringVar(self.content_frame)
-        entities = ["Flight ID","Aircraft ID", "Pilot ID","Departure Country", "Departure City", "Departure Airport Code","Departure Local Date/Time", "Arrival Country", "Arrival City", "Arrival Airport Code", "Arrival Local Date/Time"]
-        entity_dropdown = ttk.Combobox(self.content_frame, textvariable=entity_var, values=entities)
-        entity_dropdown.pack()
+        for i, instruction in enumerate(instructions):
+            label = tk.Label(self.content_frame, text=instruction)
+            label.grid(row=i+1, column=1, padx=10, pady=5, sticky="e")
 
-        value_label = tk.Label(self.content_frame, text="Enter known information:")
-        value_label.pack()
+            if "Aircraft ID:" in instruction:
+                c.execute("SELECT AircraftID FROM Aircraft")
+                aircraft_ids = [row[0] for row in c.fetchall()]
 
-        value_entry = tk.Entry(self.content_frame)
-        value_entry.pack()
+                select_aircraft_id = tk.StringVar(self.content_frame)
+                entry = ttk.Combobox(self.content_frame, textvariable=select_aircraft_id, state="readonly")
+                entry['values'] = aircraft_ids
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
 
-        def submit_search():
-            entity = entity_var.get()
-            value = value_entry.get()
-    
-            c.execute(f'''
-                SELECT * FROM Flight
-                WHERE "{entity}" LIKE ?
-            ''', ('%' + value + '%',))
-      
-            results = c.fetchall()
+            elif "Pilot ID:" in instruction:
+                c.execute("SELECT PilotID FROM Pilot")
+                pilot_ids = [row[0] for row in c.fetchall()]
 
-            self.clear_content()
-            tk.Label(self.content_frame, text="Search Result", font=("Arial", 16)).pack(pady=10)
+                select_pilot_id = tk.StringVar(self.content_frame)
+                entry = ttk.Combobox(self.content_frame, textvariable=select_pilot_id, state="readonly")
+                entry['values'] = pilot_ids
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
             
-            headers = ["Flight ID", "Departure Country", "Departure City", "Departure Airport", "Departure Local Date/Time", "Departure Time Zone", "Arrival Country", "Arrival City", "Arrival Airport", "Arrival Local Date/Time", "Arrival Time Zone","Total Flight Time", "Aircraft ID", "Pilot ID"]
+            elif "Airport Code" in instruction:
+                c.execute("SELECT AirportCode FROM Airport")
+                airport_ids = [row[0] for row in c.fetchall()]
 
-            tree = ttk.Treeview(self.content_frame)
-            tree["columns"] = tuple(range(len(results[0])))  
-            tree["show"] = "headings"
+                select_airport_id = tk.StringVar(self.content_frame)
+                entry = ttk.Combobox(self.content_frame, textvariable=select_airport_id, state="readonly")
+                entry['values'] = airport_ids
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+                
 
-            for i, header in enumerate(headers):
+            elif "Date/Time" in instruction:
+                year_values = [str(y) for y in range(2010, 2051)]
+                year_box = ttk.Combobox(self.content_frame, values=year_values, width=5, state="readonly")
+                year_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "w")
+
+                month_values = [str(m).zfill(2) for m in range(1, 13)]
+                month_box = ttk.Combobox(self.content_frame, values=month_values,width=3, state="readonly")
+                month_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "e")
+
+                day_values = [str(d).zfill(2) for d in range(1, 32)]
+                day_box = ttk.Combobox(self.content_frame, values=day_values,width=3, state="readonly")
+                day_box.grid(row=i+1, column=3, padx=5, pady=5, sticky = "w")
+
+                hour_values = [str(h).zfill(2) for h in range(0, 24)]
+                hour_box = ttk.Combobox(self.content_frame, values=hour_values,width=3, state="readonly")
+                hour_box.grid(row=i+1, column=3, padx=5, pady=5, sticky = "e")
+
+                minute_values = [str(m).zfill(2) for m in range(0, 60)]
+                minute_box = ttk.Combobox(self.content_frame, values=minute_values,width=3, state="readonly")
+                minute_box.grid(row=i+1, column=4, padx=5, pady=5, sticky = "w")
+
+                entry = (year_box, month_box, day_box, hour_box, minute_box)
+            
+            elif "Country" in instruction:
+                c.execute("SELECT DISTINCT Country FROM Airport ORDER BY Country")
+                country_list= [row[0] for row in c.fetchall()]
+
+                select_country = tk.StringVar(self.content_frame)
+                entry = ttk.Combobox(self.content_frame, textvariable=select_country, state="readonly")
+                entry['values'] = country_list
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+
+            elif "City" in instruction:
+                c.execute("SELECT DISTINCT City FROM Airport ORDER BY City")
+                city_list= [row[0] for row in c.fetchall()]
+
+                select_city = tk.StringVar(self.content_frame)
+                entry = ttk.Combobox(self.content_frame, textvariable=select_city, state="readonly")
+                entry['values'] = city_list
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+
+            elif "Time Zone" in instruction:
+                timezone_list=  ["UTC-12", "UTC-11", "UTC-10", "UTC-9.5", "UTC-9","UTC-8", "UTC-7",
+                                 "UTC-6", "UTC-5", "UTC-4","UTC-3.5", "UTC-3", "UTC-2", "UTC-1",
+                                 "UTC+0", "UTC+1", "UTC+2", "UTC+3", "UTC+3.5", "UTC+4","UTC+4.5",
+                                 "UTC+5", "UTC+5.5", "UTC+6","UTC+6.5", "UTC+7", "UTC+8", "UTC+9",
+                                 "UTC+9.5", "UTC+10", "UTC+10.5", "UTC+11", "UTC+12","UTC+13", "UTC+14"]
+
+                select_timezone = tk.StringVar(self.content_frame)
+                entry = ttk.Combobox(self.content_frame, textvariable=select_timezone, state="readonly")
+                entry['values'] = timezone_list
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+        
+            else:
+                entry = tk.Entry(self.content_frame)
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+      
+            entries[instruction] = entry
+        
+        def get_search_input():
+            search_inputs = {}
+            for instruction, entry in entries.items(): 
+                if isinstance(entry, tuple): 
+                    year = entry[0].get() if entry[0].get() else "%"
+                    month = entry[1].get().zfill(2) if entry[1].get() else "%"
+                    day = entry[2].get().zfill(2) if entry[2].get() else "%"
+                    hour = entry[3].get().zfill(2) if entry[3].get() else "%"
+                    minute = entry[4].get().zfill(2) if entry[4].get() else "%"
+                    datetime_value = f"{year}-{month}-{day} {hour}:{minute}"
+                    search_inputs[instruction] = datetime_value
+                else:
+                    search_inputs[instruction] = entry.get()
+            return search_inputs
+        
+        def submit_search():
+            search_inputs = get_search_input()
+
+            where_clauses = []
+            parameters = []
+
+            if "Flight ID:" in search_inputs:
+                where_clauses.append("f.FlightID LIKE ?")
+                parameters.append(f"%{search_inputs['Flight ID:']}%")
+            if "Departure Country:" in search_inputs:
+                where_clauses.append("da.Country LIKE ?")
+                parameters.append(f"%{search_inputs['Departure Country:']}%")
+            if "Departure City:" in search_inputs:
+                where_clauses.append("da.City LIKE ?")
+                parameters.append(f"%{search_inputs['Departure City:']}%")
+            if "Departure Airport Code:" in search_inputs:
+                where_clauses.append("f.DepartureAirportCode LIKE ?")
+                parameters.append(f"%{search_inputs['Departure Airport Code:']}%")
+            if "Local Departure Date/Time:" in search_inputs:
+                where_clauses.append("f.DepartureDateTime_Local LIKE ?")
+                parameters.append(f"%{search_inputs['Local Departure Date/Time:']}%")
+            if search_inputs.get("Departure Time Zone:"):
+                where_clauses.append("da.TimeZone = ?")
+                parameters.append(search_inputs['Departure Time Zone:'])
+            if "Departure Time Zone:" in search_inputs:
+                where_clauses.append("da.TimeZone LIKE ?")
+                parameters.append(f"%{search_inputs['Departure Time Zone:']}%")
+            if "Arrival Country:" in search_inputs:
+                where_clauses.append("aa.Country LIKE ?")
+                parameters.append(f"%{search_inputs['Arrival Country:']}%")
+            if "Arrival City:" in search_inputs:
+                where_clauses.append("aa.City LIKE ?")
+                parameters.append(f"%{search_inputs['Arrival City:']}%")
+            if "Arrival Airport Code:" in search_inputs:
+                where_clauses.append("f.ArrivalAirportCode LIKE ?")
+                parameters.append(f"%{search_inputs['Arrival Airport Code:']}%")
+            if "Local Arrival Date/Time:" in search_inputs:
+                where_clauses.append("f.ArrivalDateTime_Local LIKE ?")
+                parameters.append(f"%{search_inputs['Local Arrival Date/Time:']}%")
+            if "Arrival Time Zone:" in search_inputs:
+                where_clauses.append("aa.TimeZone LIKE ?")
+                parameters.append(f"%{search_inputs['Arrival Time Zone:']}%")
+            if "Aircraft ID:" in search_inputs:
+                where_clauses.append("f.AircraftID LIKE ?")
+                parameters.append(f"%{search_inputs['Aircraft ID:']}%")
+            if "Pilot ID:" in search_inputs:
+                where_clauses.append("f.PilotID LIKE ?")
+                parameters.append(f"%{search_inputs['Pilot ID:']}%")
+            
+            query = """
+                SELECT f.FlightID, da.Country AS DepartureCountry, da.City AS DepartureCity, f.DepartureAirportCode, 
+                    f.DepartureDateTime_Local, da.TimeZone AS DepartureTimeZone, aa.Country AS ArrivalCountry, aa.City AS ArrivalCity, f.ArrivalAirportCode, 
+                    f.ArrivalDateTime_Local, aa.TimeZone AS ArrivalTimeZone, f.AircraftID, f.PilotID
+                FROM Flight f
+                JOIN Airport da ON f.DepartureAirportCode = da.AirportCode
+                JOIN Airport aa ON f.ArrivalAirportCode = aa.AirportCode
+            """
+
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
+
+            c.execute(query, parameters)
+            search_flight_results = c.fetchall()
+
+            self.clear_content() 
+            tk.Label(self.content_frame, text="Search Results", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
+
+            search_flight_headers = ["Flight ID", "Departure Country", "City", "Airport", "Local Date/Time", "Time Zone", 
+                      "Arrival Country", "City", "Airport", "Local Date/Time", "Time Zone", "Flight Duration", 
+                      "Aircraft ID", "Pilot ID"]
+            column_widths = [85, 150, 115, 65, 135, 75, 150, 115, 65, 135, 75, 105, 95, 95]
+
+            tree = ttk.Treeview(self.content_frame, columns=tuple(range(14)), show="headings", height=30)
+
+            for i, header in enumerate(search_flight_headers):
                 tree.heading(i, text=header)
-                tree.column(i, width=50)  
-          
-            for result in results:
-                tree.insert("", "end", values=result)
+                tree.column(i, width=column_widths[i], anchor="center")
 
-            tree.pack()
+            for row in search_flight_results:
+                flight_time = self.flight_duration(row[4], row[5], row[9], row[10])
+                row_with_duration = row[:11] + (flight_time,) + row[11:]
+                tree.insert("", "end", values=row_with_duration)
+  
+            tree.grid(row=1, column=0, columnspan=8, padx=10, pady=10)
 
             back_button = tk.Button(self.content_frame, text="Back", command=self.search_flight)
-            back_button.pack()
+            back_button.grid(row=len(instructions) + 1, column=0, columnspan=8, pady=10)
 
         submit_button = tk.Button(self.content_frame, text="Search", command=submit_search)
-        submit_button.pack()
-        back_button = tk.Button(self.content_frame, text="Back", command=self.main_page)
-        back_button.pack()
+        submit_button.grid(row=len(instructions) + 1, column=0, columnspan=8, pady=10)
+
+        back_button = tk.Button(self.content_frame, text="Back", command=self.browse_flight)
+        back_button.grid(row=len(instructions) + 2, column=0, columnspan=8, pady=10)
 
     def browse_aircraft(self):
 
@@ -501,10 +663,9 @@ class AirlineDatabaseGUI:
             tree.insert("", "end", values=row)
         tree.pack()
 
-
         button_width=20
-        #search_button = tk.Button(self.content_frame, text ="Search", command = self.search_flight, width=button_width)
-        #search_button.pack(pady=5)
+        search_button = tk.Button(self.content_frame, text ="Search Aircraft", command = self.search_aircraft, width=button_width)
+        search_button.pack(pady=5)
         edit_button = tk.Button(self.content_frame, text="Edit Selected Aircraft", command=lambda: self.edit_aircraft(tree), width=button_width)
         edit_button.pack(pady=5)
         delete_button = tk.Button(self.content_frame, text="Delete Selected Aircraft", command=lambda: delete_aircraft(tree), width=button_width)
@@ -549,9 +710,7 @@ class AirlineDatabaseGUI:
         self.content_frame.grid_columnconfigure(6, weight=1) 
         self.content_frame.grid_columnconfigure(7, weight=8)
         
-        
         tk.Label(self.content_frame, text=f"Edit Aircraft {aircraft_data[0]}", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
-        
         
         instructions = [
             "Aircraft Model:",
@@ -606,7 +765,6 @@ class AirlineDatabaseGUI:
                     user_edits[instruction] = entry.get()
             return user_edits
 
-
         def submit_edits():
             user_edits = get_user_edit()
             aircraft_model_value = user_edits["Aircraft Model:"]
@@ -660,7 +818,6 @@ class AirlineDatabaseGUI:
         self.content_frame.grid_columnconfigure(6, weight=1) 
         self.content_frame.grid_columnconfigure(7, weight=8) 
         tk.Label(self.content_frame, text="Add New Aircraft", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
-        
 
         instructions = [
             "Aircraft ID:",
@@ -734,11 +891,129 @@ class AirlineDatabaseGUI:
                 conn.rollback() 
                 messagebox.showerror("Error", f"An error occurred: {e}")
                 
-      
         submit_button = tk.Button(self.content_frame, text="Confirm", command=submit_aircraft)
         submit_button.grid(row=len(instructions) + 1, column=0, columnspan=8, pady=10)
 
         back_button = tk.Button(self.content_frame, text="Back", command=self.main_page)
+        back_button.grid(row=len(instructions) + 2, column=0, columnspan=8, pady=10)
+    
+    def search_aircraft(self):
+
+        self.clear_content()
+        self.content_frame.grid_columnconfigure(0, weight=5)
+        self.content_frame.grid_columnconfigure(1, weight=8)
+        self.content_frame.grid_columnconfigure(2, weight=1)
+        self.content_frame.grid_columnconfigure(3, weight=1)
+        self.content_frame.grid_columnconfigure(4, weight=1)
+        self.content_frame.grid_columnconfigure(5, weight=1)
+        self.content_frame.grid_columnconfigure(6, weight=1)
+        self.content_frame.grid_columnconfigure(7, weight=8)
+        tk.Label(self.content_frame, text="Search Aircraft", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
+
+        instructions = [
+            "Aircraft ID:",
+            "Aircraft Model:",
+            "Capacity:",
+            "Manufacture Date:",
+            "Last Maintainence Date:"
+            ]
+        
+        entries = {}
+
+        for i, instruction in enumerate(instructions):
+            label = tk.Label(self.content_frame, text=instruction)
+            label.grid(row=i+1, column=1, padx=10, pady=5, sticky="e")
+
+            if "Date" in instruction:
+                year_values = [str(y) for y in range(2000, 2024)]
+                year_box = ttk.Combobox(self.content_frame, values=year_values, width=5, state="readonly")
+                year_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "w")
+
+                month_values = [str(m).zfill(2) for m in range(1, 13)]
+                month_box = ttk.Combobox(self.content_frame, values=month_values,width=3, state="readonly")
+                month_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "e")
+
+                day_values = [str(d).zfill(2) for d in range(1, 32)]
+                day_box = ttk.Combobox(self.content_frame, values=day_values,width=3, state="readonly")
+                day_box.grid(row=i+1, column=3, padx=5, pady=5, sticky = "w")
+
+                entry = (year_box, month_box, day_box)
+        
+            else:
+                entry = tk.Entry(self.content_frame)
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+      
+            entries[instruction] = entry
+                
+        def get_search_input():
+            search_inputs = {}
+            for instruction, entry in entries.items(): 
+                if isinstance(entry, tuple): 
+                    year = entry[0].get() if entry[0].get() else "%"
+                    month = entry[1].get().zfill(2) if entry[1].get() else "%"
+                    day = entry[2].get().zfill(2) if entry[2].get() else "%"
+                    datetime_value = f"{year}-{month}-{day}"
+                    search_inputs[instruction] = datetime_value
+                else:
+                    search_inputs[instruction] = entry.get()
+            return search_inputs
+   
+        def submit_search():
+            search_inputs = get_search_input()
+
+            where_clauses = []
+            parameters = []
+
+            if "Aircraft ID:" in search_inputs:
+                where_clauses.append("AircraftID LIKE ?")
+                parameters.append(f"%{search_inputs['Aircraft ID:']}%")
+            if "Aircraft Model:" in search_inputs:
+                where_clauses.append("AircraftModel LIKE ?")
+                parameters.append(f"%{search_inputs['Aircraft Model:']}%")
+            if "Capacity:" in search_inputs:
+                where_clauses.append("Capacity LIKE ?")
+                parameters.append(f"%{search_inputs['Capacity:']}%")
+            if "Manufacture Date:" in search_inputs:
+                where_clauses.append("ManufactureDate LIKE ?")
+                parameters.append(f"%{search_inputs['Manufacture Date:']}%")
+            if "Last Maintainence Date:" in search_inputs:
+                where_clauses.append("LastMaintainenceDate LIKE ?")
+                parameters.append(f"%{search_inputs['Last Maintainence Date:']}%")
+            
+            query = """
+                SELECT * FROM Aircraft
+            """
+
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
+
+            c.execute(query, parameters)
+            search_aircraft_results = c.fetchall()
+
+            self.clear_content() 
+            tk.Label(self.content_frame, text="Search Results", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
+
+            search_aircraft_headers = ["Aircraft ID", "Model", "Capacity", "Manufacture Date", "Last Maintainence Date"]
+            column_widths = [85, 65, 75, 135, 135]
+
+            tree = ttk.Treeview(self.content_frame, columns=tuple(range(5)), show="headings", height=30)
+
+            for i, header in enumerate(search_aircraft_headers):
+                tree.heading(i, text=header)
+                tree.column(i, width=column_widths[i], anchor="center")
+
+            for row in search_aircraft_results:
+                tree.insert("", "end", values=row)
+  
+            tree.grid(row=1, column=0, columnspan=8, padx=10, pady=10)
+
+            back_button = tk.Button(self.content_frame, text="Back", command=self.search_aircraft)
+            back_button.grid(row=len(instructions) + 1, column=0, columnspan=8, pady=10)
+
+        submit_button = tk.Button(self.content_frame, text="Search", command=submit_search)
+        submit_button.grid(row=len(instructions) + 1, column=0, columnspan=8, pady=10)
+
+        back_button = tk.Button(self.content_frame, text="Back", command=self.browse_aircraft)
         back_button.grid(row=len(instructions) + 2, column=0, columnspan=8, pady=10)
     
     def browse_pilot(self):
@@ -760,8 +1035,8 @@ class AirlineDatabaseGUI:
         tree.pack()
 
         button_width=20
-        #search_button = tk.Button(self.content_frame, text ="Search", command = self.search_flight, width=button_width)
-        #search_button.pack(pady=5)
+        search_button = tk.Button(self.content_frame, text ="Search Pilot", command = self.search_pilot, width=button_width)
+        search_button.pack(pady=5)
         edit_button = tk.Button(self.content_frame, text="Edit Selected Pilot", command=lambda: self.edit_pilot(tree), width=button_width)
         edit_button.pack(pady=5)
         delete_button = tk.Button(self.content_frame, text="Delete Selected Pilot", command=lambda: delete_pilot(tree), width=button_width)
@@ -806,9 +1081,7 @@ class AirlineDatabaseGUI:
         self.content_frame.grid_columnconfigure(6, weight=1) 
         self.content_frame.grid_columnconfigure(7, weight=8)
         
-        
-        tk.Label(self.content_frame, text=f"Edit Aircraft {pilot_data[0]}", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
-        
+        tk.Label(self.content_frame, text=f"Edit Pilot {pilot_data[0]}", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
         
         instructions = [
             "License ID:",
@@ -876,7 +1149,6 @@ class AirlineDatabaseGUI:
                     user_edits[instruction] = entry.get()
             return user_edits
 
-
         def submit_edits():
             user_edits = get_user_edit()
             license_id_value = user_edits["License ID:"]
@@ -937,7 +1209,6 @@ class AirlineDatabaseGUI:
         self.content_frame.grid_columnconfigure(7, weight=8) 
         tk.Label(self.content_frame, text="Add New Pilot", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
         
-
         instructions = [
             "Pilot ID:",
             "License ID:",
@@ -993,7 +1264,6 @@ class AirlineDatabaseGUI:
                     user_inputs[instruction] = entry.get()
             return user_inputs
 
-
         def submit_pilot():
             user_inputs = get_user_input()
             pilot_id_value = user_inputs["Pilot ID:"]
@@ -1024,6 +1294,139 @@ class AirlineDatabaseGUI:
         submit_button.grid(row=len(instructions) + 1, column=0, columnspan=8, pady=10)
 
         back_button = tk.Button(self.content_frame, text="Back", command=self.main_page)
+        back_button.grid(row=len(instructions) + 2, column=0, columnspan=8, pady=10)
+    
+    def search_pilot(self):
+        self.clear_content()
+        self.content_frame.grid_columnconfigure(0, weight=5)
+        self.content_frame.grid_columnconfigure(1, weight=8)
+        self.content_frame.grid_columnconfigure(2, weight=1)
+        self.content_frame.grid_columnconfigure(3, weight=1)
+        self.content_frame.grid_columnconfigure(4, weight=1)
+        self.content_frame.grid_columnconfigure(5, weight=1)
+        self.content_frame.grid_columnconfigure(6, weight=1)
+        self.content_frame.grid_columnconfigure(7, weight=8)
+        tk.Label(self.content_frame, text="Search Pilot", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
+
+        instructions = [
+            "Pilot ID:",
+            "License ID:",
+            "Name:",
+            "Nationality:",
+            "Gender:",
+            "Date of Birth:",
+            "Onboard Date:"
+            ]
+        
+        entries = {}
+
+        for i, instruction in enumerate(instructions):
+            label = tk.Label(self.content_frame, text=instruction)
+            label.grid(row=i+1, column=1, padx=10, pady=5, sticky="e")
+
+            
+            if "Gender:" in instruction:
+                select_gender = tk.StringVar(self.content_frame)
+                genders = ["F", "M", "NB"]
+                entry = ttk.Combobox(self.content_frame, textvariable=select_gender, values=genders, state="readonly")
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+
+            elif "Date" in instruction:
+                year_values = [str(y) for y in range(1950, 2030)]
+                year_box = ttk.Combobox(self.content_frame, values=year_values, width=5, state="readonly")
+                year_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "w")
+
+                month_values = [str(m).zfill(2) for m in range(1, 13)]
+                month_box = ttk.Combobox(self.content_frame, values=month_values,width=3, state="readonly")
+                month_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "e")
+
+                day_values = [str(d).zfill(2) for d in range(1, 32)]
+                day_box = ttk.Combobox(self.content_frame, values=day_values,width=3, state="readonly")
+                day_box.grid(row=i+1, column=3, padx=5, pady=5, sticky = "w")
+
+                entry = (year_box, month_box, day_box)
+
+            else:
+                entry = tk.Entry(self.content_frame)
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+
+            entries[instruction] = entry
+                
+        def get_search_input():
+            search_inputs = {}
+            for instruction, entry in entries.items(): 
+                if isinstance(entry, tuple): 
+                    year = entry[0].get() if entry[0].get() else "%"
+                    month = entry[1].get().zfill(2) if entry[1].get() else "%"
+                    day = entry[2].get().zfill(2) if entry[2].get() else "%"
+                    datetime_value = f"{year}-{month}-{day}"
+                    search_inputs[instruction] = datetime_value
+                else:
+                    search_inputs[instruction] = entry.get()
+            return search_inputs
+   
+        def submit_search():
+            search_inputs = get_search_input()
+
+            where_clauses = []
+            parameters = []
+
+            if "Pilot ID:" in search_inputs:
+                where_clauses.append("PilotID LIKE ?")
+                parameters.append(f"%{search_inputs['Pilot ID:']}%")
+            if "License ID:" in search_inputs:
+                where_clauses.append("LicenseID LIKE ?")
+                parameters.append(f"%{search_inputs['License ID:']}%")
+            if "Name:" in search_inputs:
+                where_clauses.append("Name LIKE ?")
+                parameters.append(f"%{search_inputs['Name:']}%")
+            if "Nationality:" in search_inputs:
+                where_clauses.append("Nationality LIKE ?")
+                parameters.append(f"%{search_inputs['Nationality:']}%")
+            if "Gender:" in search_inputs:
+                where_clauses.append("Gender LIKE ?")
+                parameters.append(f"%{search_inputs['Gender:']}%")
+            if "Date of Birth:" in search_inputs:
+                where_clauses.append("DateofBirth LIKE ?")
+                parameters.append(f"%{search_inputs['Date of Birth:']}%")
+            if "Onboard Date:" in search_inputs:
+                where_clauses.append("OnboardDate LIKE ?")
+                parameters.append(f"%{search_inputs['Onboard Date:']}%")
+            
+            query = """
+                SELECT * FROM Pilot
+            """
+
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
+
+            c.execute(query, parameters)
+            search_pilot_results = c.fetchall()
+
+            self.clear_content() 
+            tk.Label(self.content_frame, text="Search Results", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
+
+            search_pilot_headers = ["Pilot ID", "License ID", "Name", "Nationality", "Gender", "Date of Birth", "Onboard Date"]
+            column_widths = [95, 95, 155, 125, 55, 125, 125]
+
+            tree = ttk.Treeview(self.content_frame, columns=tuple(range(7)), show="headings", height=30)
+
+            for i, header in enumerate(search_pilot_headers):
+                tree.heading(i, text=header)
+                tree.column(i, width=column_widths[i], anchor="center")
+
+            for row in search_pilot_results:
+                tree.insert("", "end", values=row)
+  
+            tree.grid(row=1, column=0, columnspan=8, padx=10, pady=10)
+
+            back_button = tk.Button(self.content_frame, text="Back", command=self.search_pilot)
+            back_button.grid(row=len(instructions) + 1, column=0, columnspan=8, pady=10)
+
+        submit_button = tk.Button(self.content_frame, text="Search", command=submit_search)
+        submit_button.grid(row=len(instructions) + 1, column=0, columnspan=8, pady=10)
+
+        back_button = tk.Button(self.content_frame, text="Back", command=self.browse_pilot)
         back_button.grid(row=len(instructions) + 2, column=0, columnspan=8, pady=10)
 
     def clear_content(self):
