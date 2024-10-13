@@ -108,13 +108,13 @@ class AirlineDatabaseGUI:
         button_width=20
         #search_button = tk.Button(self.content_frame, text ="Search", command = self.search_flight, width=button_width)
         #search_button.pack(pady=5)
-        edit_button= tk.Button(self.content_frame, text="Edit Selected Flight", command=lambda: self.edit_flight(tree), width=button_width)
+        edit_button = tk.Button(self.content_frame, text="Edit Selected Flight", command=lambda: self.edit_flight(tree), width=button_width)
         edit_button.pack(pady=5)
         delete_button = tk.Button(self.content_frame, text="Delete Selected Flight", command=lambda: delete_flight(tree), width=button_width)
         delete_button.pack(pady=5)
-        new_button= tk.Button(self.content_frame, text="Add New Flight", command=self.new_flight, width=button_width)
+        new_button = tk.Button(self.content_frame, text="Add New Flight", command=self.new_flight, width=button_width)
         new_button.pack(pady=5)
-        back_button= tk.Button(self.content_frame, text="Back", command=self.main_page, width=button_width)
+        back_button = tk.Button(self.content_frame, text="Back", command=self.main_page, width=button_width)
         back_button.pack(pady=5)
 
         def delete_flight(tree):
@@ -166,6 +166,7 @@ class AirlineDatabaseGUI:
         ]
 
         entries = {}
+        flight_id_value = flight_data[0] 
         
         for i, instruction in enumerate(instructions):
             label = tk.Label(self.content_frame, text=instruction)
@@ -174,31 +175,25 @@ class AirlineDatabaseGUI:
             if "Aircraft ID:" in instruction:
                 c.execute("SELECT AircraftID FROM Aircraft")
                 aircraft_ids = [row[0] for row in c.fetchall()]
-
-                edit_aircraft_id = tk.StringVar(self.content_frame)
-                entry = ttk.Combobox(self.content_frame, textvariable=edit_aircraft_id, state="readonly")
+                entry = ttk.Combobox(self.content_frame, state="readonly")
                 entry['values'] = aircraft_ids
-                edit_aircraft_id.set(flight_data[12])
+                entry.set(flight_data[12])
                 entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
 
             elif "Pilot ID:" in instruction:
                 c.execute("SELECT PilotID FROM Pilot")
                 pilot_ids = [row[0] for row in c.fetchall()]
-
-                edit_pilot_id = tk.StringVar(self.content_frame)
-                entry = ttk.Combobox(self.content_frame, textvariable=edit_pilot_id, state="readonly")
+                entry = ttk.Combobox(self.content_frame, state="readonly")
                 entry['values'] = pilot_ids
-                edit_pilot_id .set(flight_data[13])
+                entry.set(str(flight_data[13]))
                 entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
             
             elif "Airport Code" in instruction:
                 c.execute("SELECT AirportCode FROM Airport")
                 airport_ids = [row[0] for row in c.fetchall()]
-
-                edit_airport_id = tk.StringVar(self.content_frame)
-                entry = ttk.Combobox(self.content_frame, textvariable=edit_airport_id, state="readonly")
+                entry = ttk.Combobox(self.content_frame, state="readonly")
                 entry['values'] = airport_ids
-                edit_airport_id.set(flight_data[3] if "Departure" in instruction else flight_data[8])
+                entry.set(flight_data[3] if "Departure" in instruction else flight_data[8])
                 entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
 
             else:
@@ -213,23 +208,23 @@ class AirlineDatabaseGUI:
                 year_box.set(year_ori)
 
                 month_values = [str(m).zfill(2) for m in range(1, 13)]
-                month_box = ttk.Combobox(self.content_frame, values=month_values,width=3, state="readonly")
+                month_box = ttk.Combobox(self.content_frame, values=month_values, width=3, state="readonly")
                 month_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "e")
                 month_box.set(month_ori) 
 
 
                 day_values = [str(d).zfill(2) for d in range(1, 32)]
-                day_box = ttk.Combobox(self.content_frame, values=day_values,width=3, state="readonly")
+                day_box = ttk.Combobox(self.content_frame, values=day_values, width=3, state="readonly")
                 day_box.grid(row=i+1, column=3, padx=5, pady=5, sticky = "w")
                 day_box.set(day_ori)
 
                 hour_values = [str(h).zfill(2) for h in range(0, 24)]
-                hour_box = ttk.Combobox(self.content_frame, values=hour_values,width=3, state="readonly")
+                hour_box = ttk.Combobox(self.content_frame, values=hour_values, width=3, state="readonly")
                 hour_box.grid(row=i+1, column=3, padx=5, pady=5, sticky = "e")
                 hour_box.set(hour_ori) 
 
                 minute_values = [str(m).zfill(2) for m in range(0, 60)]
-                minute_box = ttk.Combobox(self.content_frame, values=minute_values,width=3, state="readonly")
+                minute_box = ttk.Combobox(self.content_frame, values=minute_values, width=3, state="readonly")
                 minute_box.grid(row=i+1, column=4, padx=5, pady=5, sticky = "w")
                 minute_box.set(minute_ori)
 
@@ -238,23 +233,23 @@ class AirlineDatabaseGUI:
             entries[instruction] = entry
 
         def get_user_edit():
-            user_inputs = {}
+            user_edits = {}
             for instruction, entry in entries.items(): 
                 if isinstance(entry, tuple): 
                     datetime_value = f"{entry[0].get()}-{entry[1].get().zfill(2)}-{entry[2].get().zfill(2)} {entry[3].get().zfill(2)}:{entry[4].get().zfill(2)}"
-                    user_inputs[instruction] = datetime_value
+                    user_edits[instruction] = datetime_value
                 else:
-                    user_inputs[instruction] = entry.get()
-            return user_inputs
+                    user_edits[instruction] = entry.get()
+            return user_edits
 
         def submit_edits():
-            user_inputs = get_user_edit()
-            departure_airport_code_value = user_inputs["Departure Airport Code:"]
-            departure_date_time_local_value = user_inputs["Local Departure Date/Time:"]
-            arrival_airport_code_value = user_inputs["Arrival Airport Code:"]
-            arrival_date_time_local_value = user_inputs["Local Arrival Date/Time:"]
-            select_aircraft_id_value = user_inputs["Aircraft ID:"]
-            select_pilot_id_value = user_inputs["Pilot ID:"]
+            user_edits = get_user_edit()
+            departure_airport_code_value = user_edits["Departure Airport Code:"]
+            departure_date_time_local_value = user_edits["Local Departure Date/Time:"]
+            arrival_airport_code_value = user_edits["Arrival Airport Code:"]
+            arrival_date_time_local_value = user_edits["Local Arrival Date/Time:"]
+            select_aircraft_id_value = user_edits["Aircraft ID:"]
+            select_pilot_id_value = user_edits["Pilot ID:"]
 
             if not all([departure_airport_code_value, departure_date_time_local_value, 
                 arrival_airport_code_value, arrival_date_time_local_value, 
@@ -273,13 +268,13 @@ class AirlineDatabaseGUI:
                     PilotID = ?
                     WHERE FlightID = ?
                     """, (
-                        get_user_edit["Departure Airport Code:"],
-                        get_user_edit["Local Departure Date/Time:"],
-                        get_user_edit["Arrival Airport Code:"],
-                        get_user_edit["Local Arrival Date/Time:"],
-                        get_user_edit["Aircraft ID:"],
-                        get_user_edit["Pilot ID:"],
-                        get_user_edit["Flight ID:"]
+                        departure_airport_code_value,
+                        departure_date_time_local_value,
+                        arrival_airport_code_value,
+                        arrival_date_time_local_value,
+                        select_aircraft_id_value,
+                        select_pilot_id_value,
+                        flight_id_value
                     ))
                 conn.commit()
                 messagebox.showinfo("Success", f"Flight {flight_data[0]} has been updated successfully.")
@@ -293,10 +288,7 @@ class AirlineDatabaseGUI:
 
         back_button = tk.Button(self.content_frame, text="Back", command=self.browse_flight)
         back_button.grid(row=len(instructions)+2, column=0, columnspan=8, pady=10)
-
-
-
-         
+        
     def new_flight(self):
 
         self.clear_content()
@@ -510,15 +502,151 @@ class AirlineDatabaseGUI:
         tree.pack()
 
 
-        button_width=10
+        button_width=20
         #search_button = tk.Button(self.content_frame, text ="Search", command = self.search_flight, width=button_width)
         #search_button.pack(pady=5)
-        #edit_button= tk.Button(self.content_frame, text="Edit", command=self.main_page, width=button_width)
-        #edit_button.pack(pady=5)
-        new_button= tk.Button(self.content_frame, text="New Aircraft", command=self.new_aircraft, width=button_width)
+        edit_button = tk.Button(self.content_frame, text="Edit Selected Aircraft", command=lambda: self.edit_aircraft(tree), width=button_width)
+        edit_button.pack(pady=5)
+        delete_button = tk.Button(self.content_frame, text="Delete Selected Aircraft", command=lambda: delete_aircraft(tree), width=button_width)
+        delete_button.pack(pady=5)
+        new_button= tk.Button(self.content_frame, text="Add New Aircraft", command=self.new_aircraft, width=button_width)
         new_button.pack(pady=5)
         back_button= tk.Button(self.content_frame, text="Back", command=self.main_page, width=button_width)
         back_button.pack(pady=5)
+
+        def delete_aircraft(tree):
+            selected_item = tree.selection()
+            if not selected_item:
+                messagebox.showwarning("No Selection", "Please select an aircraft to delete.")
+                return
+            
+            aircraft_id = tree.item(selected_item)["values"][0]
+            confirm = messagebox.askyesno("Confirm Deletion", f"Are you sure you want to delete aircraft {aircraft_id}?")
+            if confirm:
+                try:
+                    c.execute("DELETE FROM Aircraft WHERE AircraftID = ?", (aircraft_id,))
+                    conn.commit()
+                    messagebox.showinfo("Success", f"Aircraft {aircraft_id} has been deleted successfully.")
+                    tree.delete(selected_item)
+                except Exception as e:
+                    messagebox.showerror("Error", f"An error occurred: {e}")
+
+    def edit_aircraft(self,tree):
+        selected_item = tree.selection()
+        if not selected_item:
+            messagebox.showwarning("No Selection", "Please select an aircraft to edit.")
+            return
+
+        aircraft_data = tree.item(selected_item)["values"]
+        self.clear_content()
+
+        self.content_frame.grid_columnconfigure(0, weight=5)
+        self.content_frame.grid_columnconfigure(1, weight=8)
+        self.content_frame.grid_columnconfigure(2, weight=1) 
+        self.content_frame.grid_columnconfigure(3, weight=1)
+        self.content_frame.grid_columnconfigure(4, weight=1) 
+        self.content_frame.grid_columnconfigure(5, weight=1)
+        self.content_frame.grid_columnconfigure(6, weight=1) 
+        self.content_frame.grid_columnconfigure(7, weight=8)
+        
+        
+        tk.Label(self.content_frame, text=f"Edit Aircraft {aircraft_data[0]}", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
+        
+        
+        instructions = [
+            "Aircraft Model:",
+            "Capacity:",
+            "Manufacture Date:",
+            "Last Maintainence Date:"
+        ]
+
+        entries = {}
+        aircraft_id_value = aircraft_data[0] 
+        
+        for i, instruction in enumerate(instructions):
+            label = tk.Label(self.content_frame, text=instruction)
+            label.grid(row=i+1, column=1, padx=10, pady=5, sticky="e")
+
+            if "Date" in instruction:
+                date_time_value = aircraft_data[3] if "Manufacture" in instruction else aircraft_data[4]
+                year_ori, month_ori, day_ori = date_time_value.split("-")
+
+                year_values = [str(y) for y in range(2000, 2024)]
+                year_box = ttk.Combobox(self.content_frame, values=year_values, width=5, state="readonly")
+                year_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "w")
+                year_box.set(year_ori)
+
+                month_values = [str(m).zfill(2) for m in range(1, 13)]
+                month_box = ttk.Combobox(self.content_frame, values=month_values, width=3, state="readonly")
+                month_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "e")
+                month_box.set(month_ori) 
+
+                day_values = [str(d).zfill(2) for d in range(1, 32)]
+                day_box = ttk.Combobox(self.content_frame, values=day_values, width=3, state="readonly")
+                day_box.grid(row=i+1, column=3, padx=5, pady=5, sticky = "w")
+                day_box.set(day_ori)
+
+                entry = (year_box, month_box, day_box)
+
+            else:
+                entry = tk.Entry(self.content_frame)
+                entry.delete(0, "end")
+                entry.insert(0, str(aircraft_data[2]) if "Capacity" in instruction else aircraft_data[1])
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+      
+            entries[instruction] = entry
+
+        def get_user_edit():
+            user_edits = {}
+            for instruction, entry in entries.items(): 
+                if isinstance(entry, tuple): 
+                    datetime_value = f"{entry[0].get()}-{entry[1].get().zfill(2)}-{entry[2].get().zfill(2)}"
+                    user_edits[instruction] = datetime_value
+                else:
+                    user_edits[instruction] = entry.get()
+            return user_edits
+
+
+        def submit_edits():
+            user_edits = get_user_edit()
+            aircraft_model_value = user_edits["Aircraft Model:"]
+            capacity_value = user_edits["Capacity:"]
+            manufacture_date_value = user_edits["Manufacture Date:"]
+            last_maintainence_date_value = user_edits["Last Maintainence Date:"]
+
+            if not all([aircraft_model_value, capacity_value, 
+                manufacture_date_value, last_maintainence_date_value, 
+                ]):
+                messagebox.showwarning("Incomplete Data", "Please fill out all fields.")
+                return
+        
+            try:
+                c.execute("""
+                    UPDATE Aircraft SET 
+                    AircraftModel = ?, 
+                    Capacity = ?, 
+                    ManufactureDate = ?, 
+                    LastMaintainenceDate = ? 
+                    WHERE AircraftID = ?
+                    """, (
+                        aircraft_model_value,
+                        capacity_value,
+                        manufacture_date_value,
+                        last_maintainence_date_value,
+                        aircraft_id_value
+                    ))
+                conn.commit()
+                messagebox.showinfo("Success", f"Aircraft {aircraft_data[0]} has been updated successfully.")
+                self.browse_aircraft() 
+            except Exception as e:
+                conn.rollback() 
+                messagebox.showerror("Error", f"An error occurred: {e}")
+   
+        submit_button = tk.Button(self.content_frame, text="Save", command=submit_edits)
+        submit_button.grid(row=len(instructions)+1, column=0, columnspan=8, pady=10)
+
+        back_button = tk.Button(self.content_frame, text="Back", command=self.browse_aircraft)
+        back_button.grid(row=len(instructions)+2, column=0, columnspan=8, pady=10)
         
     def new_aircraft(self):
 
@@ -631,15 +759,170 @@ class AirlineDatabaseGUI:
             tree.insert("", "end", values=row)
         tree.pack()
 
-        button_width=10
+        button_width=20
         #search_button = tk.Button(self.content_frame, text ="Search", command = self.search_flight, width=button_width)
         #search_button.pack(pady=5)
-        #edit_button= tk.Button(self.content_frame, text="Edit", command=self.main_page, width=button_width)
-        #edit_button.pack(pady=5)
-        new_button= tk.Button(self.content_frame, text="New Pilot", command=self.new_pilot, width=button_width)
+        edit_button = tk.Button(self.content_frame, text="Edit Selected Pilot", command=lambda: self.edit_pilot(tree), width=button_width)
+        edit_button.pack(pady=5)
+        delete_button = tk.Button(self.content_frame, text="Delete Selected Pilot", command=lambda: delete_pilot(tree), width=button_width)
+        delete_button.pack(pady=5)
+        new_button= tk.Button(self.content_frame, text="Add New Pilot", command=self.new_pilot, width=button_width)
         new_button.pack(pady=5)
         back_button= tk.Button(self.content_frame, text="Back", command=self.main_page, width=button_width)
         back_button.pack(pady=5)
+
+        def delete_pilot(tree):
+            selected_item = tree.selection()
+            if not selected_item:
+                messagebox.showwarning("No Selection", "Please select an pilot to delete.")
+                return
+            
+            pilot_id = tree.item(selected_item)["values"][0]
+            confirm = messagebox.askyesno("Confirm Deletion", f"Are you sure you want to delete pilot {pilot_id}?")
+            if confirm:
+                try:
+                    c.execute("DELETE FROM Pilot WHERE PilotID = ?", (pilot_id,))
+                    conn.commit()
+                    messagebox.showinfo("Success", f"Pilot {pilot_id} has been deleted successfully.")
+                    tree.delete(selected_item)
+                except Exception as e:
+                    messagebox.showerror("Error", f"An error occurred: {e}")
+
+    def edit_pilot(self,tree):
+        selected_item = tree.selection()
+        if not selected_item:
+            messagebox.showwarning("No Selection", "Please select a pilot to edit.")
+            return
+
+        pilot_data = tree.item(selected_item)["values"]
+        self.clear_content()
+
+        self.content_frame.grid_columnconfigure(0, weight=5)
+        self.content_frame.grid_columnconfigure(1, weight=8)
+        self.content_frame.grid_columnconfigure(2, weight=1) 
+        self.content_frame.grid_columnconfigure(3, weight=1)
+        self.content_frame.grid_columnconfigure(4, weight=1) 
+        self.content_frame.grid_columnconfigure(5, weight=1)
+        self.content_frame.grid_columnconfigure(6, weight=1) 
+        self.content_frame.grid_columnconfigure(7, weight=8)
+        
+        
+        tk.Label(self.content_frame, text=f"Edit Aircraft {pilot_data[0]}", font=("Arial", 18)).grid(row=0, column=0, columnspan=8, pady=10)
+        
+        
+        instructions = [
+            "License ID:",
+            "Name:",
+            "Nationality:",
+            "Gender:",
+            "Date of Birth:",
+            "Onboard Date:"
+        ]
+
+        entries = {}
+        pilot_id_value = pilot_data[0] 
+        
+        for i, instruction in enumerate(instructions):
+            label = tk.Label(self.content_frame, text=instruction)
+            label.grid(row=i+1, column=1, padx=10, pady=5, sticky="e")
+
+            if "Date" in instruction:
+                date_time_value = pilot_data[5] if "Birth" in instruction else pilot_data[6]
+                year_ori, month_ori, day_ori = date_time_value.split("-")
+
+                year_values = [str(y) for y in range(1950, 2030)]
+                year_box = ttk.Combobox(self.content_frame, values=year_values, width=5, state="readonly")
+                year_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "w")
+                year_box.set(year_ori)
+
+                month_values = [str(m).zfill(2) for m in range(1, 13)]
+                month_box = ttk.Combobox(self.content_frame, values=month_values, width=3, state="readonly")
+                month_box.grid(row=i+1, column=2, padx=5, pady=5, sticky = "e")
+                month_box.set(month_ori) 
+
+                day_values = [str(d).zfill(2) for d in range(1, 32)]
+                day_box = ttk.Combobox(self.content_frame, values=day_values, width=3, state="readonly")
+                day_box.grid(row=i+1, column=3, padx=5, pady=5, sticky = "w")
+                day_box.set(day_ori)
+
+                entry = (year_box, month_box, day_box)
+
+            elif "Gender" in instruction:
+                genders = ["F", "M", "NB"]
+                entry = ttk.Combobox(self.content_frame, values=genders, state="readonly")
+                entry.set(pilot_data[4])
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+
+            else:
+                entry = tk.Entry(self.content_frame)
+                entry.delete(0, "end")
+                if "License" in instruction:
+                    entry.insert(0, pilot_data[1])
+                elif "Name" in instruction:
+                    entry.insert(0, pilot_data[2])
+                else:
+                    entry.insert(0, pilot_data[3])
+                entry.grid(row=i+1, column=2, columnspan=5, padx=10, pady=5, sticky="w")
+      
+            entries[instruction] = entry
+
+        def get_user_edit():
+            user_edits = {}
+            for instruction, entry in entries.items(): 
+                if isinstance(entry, tuple): 
+                    datetime_value = f"{entry[0].get()}-{entry[1].get().zfill(2)}-{entry[2].get().zfill(2)}"
+                    user_edits[instruction] = datetime_value
+                else:
+                    user_edits[instruction] = entry.get()
+            return user_edits
+
+
+        def submit_edits():
+            user_edits = get_user_edit()
+            license_id_value = user_edits["License ID:"]
+            name_value = user_edits["Name:"]
+            nationality_value = user_edits["Nationality:"]
+            gender_value = user_edits["Gender:"]
+            birth_value = user_edits["Date of Birth:"]
+            onboard_value = user_edits["Onboard Date:"]
+
+            if not all([license_id_value, name_value, 
+                nationality_value, gender_value, birth_value, onboard_value
+                ]):
+                messagebox.showwarning("Incomplete Data", "Please fill out all fields.")
+                return
+        
+            try:
+                c.execute("""
+                    UPDATE Pilot SET 
+                    LicenseID = ?, 
+                    Name = ?, 
+                    Nationality = ?,
+                    Gender = ?,
+                    DateofBirth = ?,
+                    OnboardDate =?
+                    WHERE PilotID = ?
+                    """, (
+                        license_id_value,
+                        name_value,
+                        nationality_value,
+                        gender_value,
+                        birth_value,
+                        onboard_value,
+                        pilot_id_value
+                    ))
+                conn.commit()
+                messagebox.showinfo("Success", f"Pilot {pilot_data[0]} has been updated successfully.")
+                self.browse_pilot() 
+            except Exception as e:
+                conn.rollback() 
+                messagebox.showerror("Error", f"An error occurred: {e}")
+   
+        submit_button = tk.Button(self.content_frame, text="Save", command=submit_edits)
+        submit_button.grid(row=len(instructions)+1, column=0, columnspan=8, pady=10)
+
+        back_button = tk.Button(self.content_frame, text="Back", command=self.browse_pilot)
+        back_button.grid(row=len(instructions)+2, column=0, columnspan=8, pady=10)
    
     def new_pilot(self):
 
