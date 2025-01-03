@@ -2,7 +2,7 @@
 
 This is a Python-based application that offers an interactive interface for simulating the management of an airline database using CRUD (Create, Read, Update, Delete) operations. The application features a graphical user interface built with Tkinter, which is seamlessly connected to a Relational Database System (RDS) backend using SQLite.
 
-## Features:
+## Features
 ### Relational Database System (RDS)
 The program sets up an SQLite database with tables for flights, pilots, aircraft, and airports, using keys to relate the data. This structure ensures efficient management, maintains data integrity, and allows for easy updates and queries.
 
@@ -10,6 +10,7 @@ The program sets up an SQLite database with tables for flights, pilots, aircraft
 A user-friendly interface powered by Tkinter allows users to interact with the airline database and visualise information easily.
 - Main interface
 ![Main Interface](images/main.png)
+
 - Information visualisation and buttons to operate the database
 ![Flight](images/flight_display.png)
 ![Pilot](images/pilots_display.png)
@@ -20,16 +21,18 @@ The application supports standard database operations such as adding, viewing, e
 - Search database
 ![search](images/flight_search.png)
 ![search_result](images/flight_search_result.png)
+
 - Add to database
 ![add](images/flight_add.png)
 ![add](images/flight_add2.png)
+
 - Select existing data to delete/edit
 ![select](images/flight_messagebox.png)
 ![delete](images/flight_delete.png)
 ![edit](images/flight_edit.png)
 ![editok](images/flight_editok.png)
 
-## How to Run:
+## How to Run
 Before running the Airline DBMS Simulator, ensure that you have **Python 3.11 or above**, as well as the **Tkinter** and **SQLite3** libraries installed on your machine.
 
 1. Installation
