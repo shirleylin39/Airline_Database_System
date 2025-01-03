@@ -1,10 +1,10 @@
-# Airline Data Management System (CRUD)
+# Airline Database Management System (CRUD)
 
 This is a Python-based application that offers an interactive interface for simulating the management of an airline database using CRUD (Create, Read, Update, Delete) operations. The application features a graphical user interface built with Tkinter, which is seamlessly connected to a Relational Database System (RDS) backend using SQLite.
 
 ## Features:
 ### Relational Database System (RDS)
-The program sets up a SQLite database with tables for flights, pilots, aircraft, and airports, using keys to relate the data. This structure ensures efficient management, maintains data integrity, and allows for easy updates and queries.
+The program sets up an SQLite database with tables for flights, pilots, aircraft, and airports, using keys to relate the data. This structure ensures efficient management, maintains data integrity, and allows for easy updates and queries.
 
 ### Graphical User Interface
 A user-friendly interface powered by Tkinter allows users to interact with the airline database and visualise information easily.
@@ -16,7 +16,7 @@ A user-friendly interface powered by Tkinter allows users to interact with the a
 ![Aircraft](images/aircraft_display.png)
 
 ### CRUD Operations
-The application supports standard database operations such as adding, viewing, editing, searching and deleting records related to flights, pilots, and aircrafts through the GUI.
+The application supports standard database operations such as adding, viewing, editing, searching and deleting records related to flights, pilots, and aircraft through the GUI.
 - Search database
 ![search](images/flight_search.png)
 ![search_result](images/flight_search_result.png)
