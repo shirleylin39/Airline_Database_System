@@ -35,7 +35,7 @@ The application supports standard database operations such as adding, viewing, e
 ## How to Run
 Before running the Airline DBMS Simulator, ensure that you have **Python 3.11 or above**, as well as the **Tkinter** and **SQLite3** libraries installed on your machine.
 
-1. Installation
+### 1. Installation
 First, make sure you have Python 3.6 or above installed on your machine. You can check your Python version by running:
 ```bash
 python --version
@@ -48,7 +48,7 @@ pip install tk
 pip install pysqlite3
 ```
 
-2. Running the Application
+### 2. Running the Application
 Once you have Python, Tkinter, and SQLite3 installed, you can run the application.
 
 Clone or download this repository, navigate to the project directory, and run the application using:
