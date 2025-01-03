@@ -23,7 +23,6 @@ The application supports standard database operations such as adding, viewing, e
 - Add to database
 ![add](images/flight_add.png)
 ![add](images/flight_add2.png)
-![add](images/flight_add3.png)
 - Select existing data to delete/edit
 ![select](images/flight_messagebox.png)
 ![delete](images/flight_delete.png)
@@ -31,7 +30,7 @@ The application supports standard database operations such as adding, viewing, e
 ![editok](images/flight_editok.png)
 
 ## How to Run:
-Before running the Airline DBMS Simulator, ensure that you have **Python 3.6 or above**, as well as the **Tkinter** and **SQLite3** libraries installed on your machine.
+Before running the Airline DBMS Simulator, ensure that you have **Python 3.11 or above**, as well as the **Tkinter** and **SQLite3** libraries installed on your machine.
 
 1. Installation
 First, make sure you have Python 3.6 or above installed on your machine. You can check your Python version by running:
