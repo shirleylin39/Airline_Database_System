@@ -13,7 +13,7 @@ A user-friendly interface powered by Tkinter allows users to interact with the a
 - Information visualisation and buttons to operate the database
 ![Flight](images/flight_display.png)
 ![Pilot](images/pilots_display.png)
-![Aircraft](images/aircrafts_display.png)
+![Aircraft](images/aircraft_display.png)
 
 ### CRUD Operations
 The application supports standard database operations such as adding, viewing, editing, searching and deleting records related to flights, pilots, and aircrafts through the GUI.
