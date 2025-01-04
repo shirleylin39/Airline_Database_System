@@ -1,6 +1,6 @@
 # Airline Database Management System (CRUD)
 
-This is a Python-based application that offers an interactive interface for simulating the management of an airline database using CRUD (Create, Read, Update, Delete) operations. The application features a graphical user interface built with Tkinter, which is seamlessly connected to a Relational Database System (RDS) backend using SQLite. Watch the demonstration on [Youtube](https://www.youtube.com/watch?v=84AbXSD07Oo)
+This is a Python-based application that offers an interactive interface for simulating the management of an airline database using CRUD (Create, Read, Update, Delete) operations. The application features a graphical user interface built with Tkinter, which is seamlessly connected to a Relational Database System (RDS) backend using SQLite. Watch the demonstration on [Youtube](https://www.youtube.com/watch?v=84AbXSD07Oo).
 
 ## Features
 ### Relational Database System (RDS)
